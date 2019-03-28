@@ -1,0 +1,79 @@
+server:
+  port: 8799
+  servlet:
+      context-path: /strategy_engine
+
+eureka:
+  instance:
+     hostname: 127.0.0.1
+  client:
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8761/eureka/
+
+spring:
+  application:
+    name: strategy-engine-service
+  redis:
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1ms
+    timeout: 1000ms
+    cluster:
+      nodes:
+        - 10.0.110.218:7000
+        - 10.0.110.218:7001
+        - 10.0.110.218:7002
+        - 10.0.110.218:7003
+        - 10.0.110.218:7004
+        - 10.0.110.218:7005
+  mvc:
+    date-format: yyyy-MM-dd HH:mm:ss
+  thymeleaf:
+    cache: false
+  datasource:
+    name: test
+    url: jdbc:mysql://10.0.110.219:3306/report?useAffectedRows=true&useUnicode=true&characterEncoding=UTF-8
+    username: bairong
+    password: BaiRong@100credit.com
+
+biz:
+  task:
+    app-code: biz-report
+    queue-name: "{biz:task:queue}:reportTestQueue"
+    check-url: http://10.0.110.219:12010/biz/v1/get_data
+    query-url: http://10.0.110.219:12020/biz_derive/v1/query_data
+    result-url: http://10.0.110.219:12020/biz_derive/v1/get_result
+    submit-url: http://10.0.110.219:12030/biz_app/v1/submit
+    notify-url: http://10.0.110.219:12030/biz_app/v1/notify
+    wait-minutes: 1
+    all-api-key: "{biz:task:init}:allApis"
+    score-api-key: "{biz:task:init}:scoreApis"
+    radar-api-key: "{biz:task:init}:radarApis"
+    all-strategy-key: "{biz:task:init}:reportStrategys"
+    rules:
+      priority-filter: true
+    engine:
+      core-pool-size: 16
+      max-pool-size: 32
+      keep-alive-time: 10
+  report:
+    score-url: http://10.0.110.218:8767/model/get_result
+    basic-url: http://10.0.110.219:12010/biz/v1/get_result
+    radar-url: http://10.0.110.219:8767/model/radar/get_result
+    html-pdf-windows-excute: C:/software/wkhtmltopdf/bin/wkhtmltopdf.exe
+    html-pdf-linux-excute: http://172.17.108.219:9381/wkhtmltopdfTask.php
+    html-pdf-files-path: D:/workspace/htmltopdf_files/report/
+    delete-html: false
+    #第三方回调接口 反馈报告生成成功结果
+    api-finished-url: http://10.0.110.219:12011/message/bus/task/finish
+    #第三方回调接口 反馈报告生成失败结果
+    api-failed-url: http://10.0.110.219:12011/message/bus/task/fail
+    #下载连接域名地址
+    domain-address: http://172.17.108.72:8762/report/
+    #是否打印详细日志，用于生产或者测试环境查错 true-开启 false-关闭
+    is-print-detail-log: false
+    #Detail同步接口
+    detail-url: http://10.0.110.219:12010/biz/v1/get_data

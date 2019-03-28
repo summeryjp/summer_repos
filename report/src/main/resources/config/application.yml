@@ -1,0 +1,4 @@
+spring:
+  profiles:
+    active: dev
+biz_server_id: 1
